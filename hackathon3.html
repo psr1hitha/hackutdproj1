@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Money Quest: Choice Game</title>
+<style>
+  body {
+    font-family: cursive;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    margin: 0;
+  }
+  #game {
+    max-width: 700px;
+    margin: 20px auto;
+    background: #333;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.5);
+  }
+  #scene-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+  #text-box {
+    padding: 20px;
+    background: #444;
+  }
+  #choices button {
+    margin: 6px;
+    padding: 10px 18px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: cursive;
+  }
+  #choices button:hover {
+    background: #43a047;
+  }
+  #stats {
+    padding: 10px;
+    background: #555;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <img id="scene-img" src="stonks.jpg" alt="">
+  <div id="text-box">
+    <h2 id="title">Money Quest 💰</h2>
+    <p id="story"></p>
+    <div id="choices"></div>
+  </div>
+  <div id="stats"></div>
+</div>
+
+<script>
+let savings = 0, debt = 0, happiness = 50, scene = 0;
+
+function updateStats() {
+  document.getElementById("stats").innerHTML =
+    `💵 Savings: ${savings} | 😟 Debt: ${debt} | 🙂 Happiness: ${happiness}`;
+}
+
+function changeImage(url){
+  document.getElementById("scene-img").src = url;
+}
+
+function startGame(){
+  savings = 0; debt = 0; happiness = 50;
+  showScene1();
+}
+
+function showScene1(){
+  changeImage("moneysp.jpg");
+  document.getElementById("story").innerText =
+    "You’ve received your first paycheck! What will you do?";
+  document.getElementById("choices").innerHTML = `
+    <button onclick="choice1A()">Save 20%</button>
+    <button onclick="choice1B()">Spend it allll</button>`;
+  updateStats();
+}
+
+function choice1A(){ savings += 20; showScene2(); }
+function choice1B(){ happiness += 10; savings -= 10; showScene2(); }
+
+function showScene2(){
+  changeImage("elmo-burning.gif");
+  if (savings >= 10){
+    document.getElementById("story").innerText =
+      "An emergency expense arises! But you’re ready for it.";
+    happiness += 5;
+  } else {
+    document.getElementById("story").innerText =
+      "An emergency expense hits! You must borrow to survive.";
+    debt += 10;
+  }
+  document.getElementById("choices").innerHTML = `<button onclick="showScene3()">Continue</button>`;
+  updateStats();
+}
+
+function showScene3(){
+  changeImage("stonks.jpg");
+  document.getElementById("story").innerText =
+    "A friend offers an investment chance. Do you take it?";
+  document.getElementById("choices").innerHTML = `
+    <button onclick="choice3A()">Invest wisely</button>
+    <button onclick="choice3B()">Decline</button>`;
+  updateStats();
+}
+
+function choice3A(){ savings >= 20 ? (savings += 30, happiness += 10) : (debt += 10); endGame(); }
+function choice3B(){ happiness += 2; endGame(); }
+
+function endGame(){
+  changeImage("stockmonie.jpg");
+  let message = "Game Over! ";
+  if (savings >= 30 && debt === 0) message += "You built a strong financial future! 🎉";
+  else if (debt > 0) message += "You ended in debt! Learn and try again! 💸";
+  else message += "Not bad, but you can improve.";
+  document.getElementById("story").innerText = message;
+  document.getElementById("choices").innerHTML = `<button onclick="startGame()">Play Again</button>`;
+  updateStats();
+}
+
+startGame();
+</script>
+</body>
+</html>
